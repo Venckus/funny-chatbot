@@ -1,0 +1,20 @@
+{
+    "hello": [
+        "hi",
+        "hello",
+        "hey",
+        "greetings",
+        "good morning",
+        "good afternoon",
+        "good night",
+        "aloha"
+    ],
+    "bye": [
+        "bye",
+        "cya",
+        "see ya",
+        "exit"
+    ],
+    "cry": "!",
+    "question": "?"
+}
