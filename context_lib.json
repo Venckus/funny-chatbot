@@ -1,4 +1,14 @@
 {
+    "api": {
+        "weather": [
+            "weather",
+            "in"
+        ],
+        "joke": [
+            "tell",
+            "joke"
+        ]
+    },
     "hello": [
         "hi",
         "hello",

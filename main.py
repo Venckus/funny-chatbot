@@ -1,5 +1,6 @@
 #!/usr/local/bin/python3
-import kivy, datetime
+import kivy
+import datetime
 # my package
 import nlp
 # kivy
@@ -14,8 +15,9 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.uix.scrollview import ScrollView
 
+
 class ConnectPage(GridLayout):
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -37,6 +39,7 @@ class ConnectPage(GridLayout):
         # Create chat page and activate it
         chat_app.create_chat_page()
         chat_app.screen_manager.current = 'Chat'
+
 
 class ScrollableLabel(ScrollView):
 
@@ -69,19 +72,20 @@ class ScrollableLabel(ScrollView):
 class ChatPage(GridLayout):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        
+
         # !!! instantantiate nlp class here
-        self.nlp = nlp.Nlp()
+        self.nlp = nlp.NLP()
 
         # We are going to use 1 column and 2 rows
         self.cols = 1
         self.rows = 2
 
-        self.history = ScrollableLabel(height=Window.size[1]*0.9, size_hint_y=None)
+        self.history = ScrollableLabel(
+            height=Window.size[1]*0.9, size_hint_y=None)
         self.add_widget(self.history)
 
         self.new_message = TextInput(width=Window.size[0]*0.8,
-                                    size_hint_x=None, multiline=False)
+                                     size_hint_x=None, multiline=False)
         self.send = Button(text="Send")
         self.send.bind(on_press=self.send_message)
 
@@ -102,6 +106,7 @@ class ChatPage(GridLayout):
             self.send_message(None)
     # Gets called when either Send button or Enter key is being pressed
     # (kivy passes button object here as well, but we don;t care about it)
+
     def send_message(self, _):
         # Get message text and clear message input field
         message = self.new_message.text
@@ -117,23 +122,25 @@ class ChatPage(GridLayout):
             # socket_client.send(message)
             # !!!! implement message handling service here
             # self.incoming_message('me',message)
-            response = self.nlp.process(chat_app.connect_page.username.text, message)
-            self.incoming_message('Funny bot',response)
+            response = self.nlp.process(
+                chat_app.connect_page.username.text, message)
+            self.incoming_message('Funny bot', response)
 
         # As mentioned above, we have to shedule for refocusing to input field
         Clock.schedule_once(self.focus_text_input, 0.1)
-    
+
     # Sets focus to text input field
     def focus_text_input(self, _):
         self.new_message.focus = True
-    
+
     # Passed to sockets client, get's called on new message
     def incoming_message(self, username, message):
         # Update chat history with username and message, green color for username
         self.history.update_chat_history(
             f'[color=999]{datetime.datetime.today().strftime("%Y-%m-%d %H:%M:%S")}[/color] '
             f'[color=20dd20]{username}[/color] > {message}')
-    
+
+
 class EpicApp(App):
 
     def build(self):
@@ -153,10 +160,12 @@ class EpicApp(App):
         screen.add_widget(self.chat_page)
         self.screen_manager.add_widget(screen)
 
+
 def show_error(message):
     chat_app.info_page.update_info(message)
     chat_app.screen_manager.current = 'Info'
     Clock.schedule_once(sys.exit, 10)
+
 
 # GUI module taken from:
 # https://pythonprogramming.net/finishing-chat-application-kivy-application-python-tutorial/?completed=/chat-application-kivy-application-python-tutorial/

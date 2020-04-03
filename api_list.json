@@ -1,0 +1,10 @@
+{
+    "weather": {
+        "location": "places",
+        "url": "https://api.meteo.lt/v1/places/",
+        "end": "/forecasts/long-term"
+    },
+    "joke": {
+        "url": "https://api.chucknorris.io/jokes/random"
+    }
+}

@@ -2,21 +2,26 @@ import requests
 import json
 
 
-class Api(object):
+def build_url(args, city=None):
+    'build request url'
 
-    def __init__(self):
-        pass
+    if city != None:
+        return f"{args['url']}{city}{args['end']}"
 
-    def api_post(self, api_url, payload):
 
-        raw_response = requests.post(api_url, data=payload)
+def api_get(url):
 
-        response = json.loads(raw_response.text)
+    raw_response = requests.get(url)
 
-        return response
+    if raw_response.status_code != 200:
 
-    def api_get(self, url):
+        return False
 
-        raw_response = requests.get(url)
-
+    else:
         return json.loads(raw_response.text)
+
+
+def validate(response):
+    'check if api request not failed'
+
+    return response if response['message'] == "SUCCESS" else False
