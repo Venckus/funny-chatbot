@@ -31,6 +31,5 @@ six==1.13.0
 typed-ast==1.4.1
 urllib3==1.25.8
 wcwidth==0.1.8
-webdriver-manager==2.3.0
 wrapt==1.11.2
 zipp==3.1.0

@@ -23,7 +23,7 @@ class Answer:
 
 @dataclass(order=True, frozen=True)
 class Context:
-    keyword: list = field()
+    keyword: str = field()
     text: list = field()
 
 
@@ -50,12 +50,13 @@ class NLP(object):
 
             return response
 
-        return self.proc_answer()
+        return self.find_answer()
 
     def insert_update(self, sender, message):
         'update message history'
 
         now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
         if self.history == None:
             self.history = History(now, sender, message)
         else:
@@ -81,12 +82,14 @@ class NLP(object):
         # latest message string split to list
         msg = self.filter_noise(self.history[-1].message)
 
-        for k, answer in self.answers.items():
-            if k in msg:
+        for k,answer in self.answers.items():
+            # find answer key matching context
+            if k == self.context[-1]:
+
                 return self.proc_answer(k, answer, msg)
 
     def proc_answer(self, type, answer, msg):
-        'decide how handle the response'
+        'decide where to smile, where to add randomness'
 
         if type in ['hello', 'bye']:
             # say hi or bye
@@ -100,18 +103,11 @@ class NLP(object):
             # appologise and ask what happend
             answer = f"{answer}."
 
-        elif type == 'api':
-            self.api.exec(answer)
-
         elif type == 'neutral':
             # random reorder message words
-            # answer = f"{self.answers['joint']}{self.set_random(msg)}."
             neutral = random.sample(answer, 2)
             complex = neutral + msg
             answer = self.set_random(complex)
-
-        # else:
-        #     answer = self.answers['unknown']
 
         return answer
 
@@ -152,9 +148,10 @@ class NLP(object):
             else:
                 return filters.weather(response)
         else:
-            # proc joke for now
             joke = api.api_get(self.api_list[api_type]['url'])
+            
             response = joke['value']
+
         return response
 
     def detect_location(self, location):
@@ -207,14 +204,14 @@ class NLP(object):
                 result.update({k: answer})
         return result
 
-    def prepare_api(self):
-        'prepare api requests'
-        for k, api in self.api_list:
-            self.apis[k] = {''.join(x for x in api)}
+    # def prepare_api(self):
+    #     'prepare api requests'
+    #     for k, api in self.api_list:
+    #         self.apis[k] = {''.join(x for x in api)}
 
 
 nlp = NLP()
-print(nlp.process('me', 'joke tell'))
+print(nlp.process('me', 'tell joke'))
 # nlp.insert_update('me', 'hello wa po ioi i')
 # print(nlp.filter_noise('hello wa, a po ioi the i'))
 # print('context LIB: ', nlp.context_lib['api'])
